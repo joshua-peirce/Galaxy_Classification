@@ -13,7 +13,7 @@ To tackle this, we first explore a classical approach, PCA coupled with logistic
 There are certain limitations to the extent to which we can train our models. First, CNNs generally rely on having immense datasets. While our current dataset is large, it is a limiting factor to the test accuracies we can achieve. CNNs also have a strong tendency to overfit, which would be another pitfall to avoid. A second limitation is that the pre-trained models we use are trained on ImageNet, which does not contain galaxy-like structures. This limits the learning that is transferred to our use case.
 
 ## Setup
-**Note**: To use our code, you must download the .h5 file data from [here](https://astro.utoronto.ca/~hleung/shared/Galaxy10/Galaxy10_DECals.h5).
+**Note**: To use our code, you must download the .h5 file data from [here](https://astro.utoronto.ca/~hleung/shared/Galaxy10/Galaxy10_DECals.h5) to your working directory.
 ### Dataset
 We use the Galaxy10 dataset contains 17,736 color pictures of galaxies, each 256 x 256 pixels with 3 color channels, totaling about 2.7GB of data. This dataset was collected by a variety of researchers from across the world \[1]. The distribution of the galaxies in the dataset is as follow:
 
