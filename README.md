@@ -1,5 +1,5 @@
 # Galaxy Classification using Machine Learning
-
+**Note**: Some figures below can not be fully seen with GitHub's dark theme. Please click on them for additional details.
 ## Abstract
 With the new James-Webb telescope, science & technology allow us to probe deeper into space than ever before. As we survey and collect heaps of data from space, it is important to efficiently and accuratly analyze such data. Particularly, space data consists of telescopic images that can be classified and analyzed using modern machine learning techniques. In this project, we use PCA, CNNs, and transfer-learning to classify different types of galaxies.
 
