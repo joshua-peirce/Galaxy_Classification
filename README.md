@@ -23,7 +23,7 @@ We use the Galaxy10 dataset contains 17,736 color pictures of galaxies, each 256
 
 ### Model Setups
 #### PCA with Logistic Regression
-First, we creat a 80-20 training test split to optimize the principal components of the PCA and test performance.
+First, we create a 80-20 training test split to optimize the principal components of the PCA and test performance.
 
 We test principal components from 1 to 100 and generated a scree plot to determine the optimal principal components that capture most of the variance in our data:
 
@@ -34,6 +34,23 @@ According the plot, the first 20 principal components capture most of the inform
 #### Simple Convolutional Neural Network
 For our convolutional neural network, the structure that we settled on had two sets of convolutional layers, each followed by ReLU activations and then a max pooling layer, followed by three linear layers of decreasing size (15552, 576, 64, 10). Each linear layer had ReLU activation, except for the output layer which used LogSoftmax. When the model started overfitting, we included a dropout as well to help mitigate those effects.
 
+We notice that our dataset is skewed, in that some labels have far more images than others. To augment our dataset, we notice that the classification of a galaxy does not depend on its orientation - a galaxy flipped horizontally still looks (and is) the same class of galaxy. Therefore, we produced all the flips and rotations of the galaxies, and used some of them depending on how lacking the corresponding class was. Before augmenting, the distribution of classes was this:
+![](https://i.imgur.com/GjFAwO7.png)
+
+
+After augmenting, the distribution of classes is this:
+![](https://i.imgur.com/OVI06He.png)
+
+
+In addition, we use some techniques to deal with overfitting:
+- L2 weight decay ($\alpha = 0.2$)
+- Dropout (0.25 after each fully-connected layer)
+- Adding Gaussian noise to the training data
+
+Gaussian noise is done by randomly sampling a Gaussian distribution $\sim\mathcal{N}(0, \beta)$, where $\beta$ is the "noise standard deviation". This value is simply some fraction of the standard deviation of the dataset; in our example it is $\beta = \frac{1}{5} \sigma$. A demonstration is shown below:
+![](https://i.imgur.com/gTUPgcE.png)
+
+
 #### Transfer-learning with CNNs
 
 While we explore two different transfer-learning models (Resnet50 & Inceptionv3), we use the same set of parameters and optimizers.
@@ -43,7 +60,7 @@ With these models, we do a 90-10 train test split and augment our images using s
 - Random Horizontal Flip
 - Normalization
 
-We used a Stochastic Gradient Descent optimizer with an initial learning rate of 0.001 and momentum of 0.9. Additionally, we also used a learning rate schedular with a schedule step of 5 with gamma 0.1. A learning rate scheduler essentially decreases the learning rate after a certain number of epoch steps to hone into the cost function's minimum. Finally, we used a batch size of 32 trained over 20 epochs.
+As with the CNNs, we used a Stochastic Gradient Descent optimizer with an initial learning rate of 0.001 and momentum of 0.9. Additionally, we also used a learning rate schedular with a schedule step of 5 with gamma 0.1. A learning rate scheduler essentially decreases the learning rate after a certain number of epoch steps to hone into the cost function's minimum. Finally, we used a batch size of 32 trained over 20 epochs.
 
 These hyperparameters and optimizers were chosen because they gave us the best results (compared to adam, no scheduler, more/less epochs).
 
@@ -77,7 +94,10 @@ PCA gave us a training accuracy score of 31% and a test accuracy score of 19%. I
 ![](https://i.imgur.com/ecjTd4o.png)
 
 ### Simple CNN
-------
+As expected, the CNN outperformed the PCA and Logistic Regression model by quite a margin. The maximum accuracy achieved by the CNN was about 46.0%. 
+##### Train and Test Loss Curves
+![](https://i.imgur.com/Ju6Bh4a.png)
+
 ### CNNs with Transfer Learning
 As expected, Resnet50 & Inceptionv3 far outperformed the other models.
 
@@ -126,8 +146,11 @@ One other technique we could have used to reduce the overfitting problem would b
 
 We were satisfied with the results from transfer learning. The only drawback we had was that the FCNs were originally trained on IMAGENET, which contains pictures of everyday objects, but not galaxies. Transferring the learned patterns of cars and planes to various shapes of galaxies is perhaps difficult than the size of our dataset allowed for, so maybe using a FCN that was originally trained on more similar data would yield better results. All in all, we are happy with transfer learning's results.
 
-## Conclusion
-We tested several models on galaxy dataset that gave us varying performances. While not meeting the expectations we originally had, these models are satisfactory for the size of our dataset.
+## Conclusion and Future Work
+We tested several models on galaxy dataset that gave us varying performances. While not meeting the expectations we originally had, these models are satisfactory for the size of our dataset. 
+
+In future, we wish to experiment further with deeper CNNs, and with other training models. The reference paper\[4] was able to achieve 99% accuracy on a subset of the images using Bayesian convolution neural networks, so we would try and use that model too. Also, for transfer learning, we might try with other pretrained models, perhaps ones already trained on images of the sky.
+
 
 ## References:
 \[1]: https://github.com/henrysky/Galaxy10
